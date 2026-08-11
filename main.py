@@ -6,7 +6,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import List, Optional
+from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
+import os
 
+app = FastAPI()
 app = FastAPI(title="ZADA Enterprise Ultimate ERP & Tax API", version="10.0.0")
 
 app.add_middleware(
@@ -106,8 +110,15 @@ class InvoiceCreate(BaseModel):
     date: date
 
 # --- ENDPOINTLƏR ---
-@app.get("/")
+from fastapi.responses import HTMLResponse
+import os
+
+@app.get("/", response_class=HTMLResponse)
 def read_root():
+    html_path = os.path.join("templates", "index.html")
+    if os.path.exists(html_path):
+        with open(html_path, "r", encoding="utf-8") as f:
+            return f.read()
     return {"message": "ZADA Enterprise Ultimate v10.0 Pro tam gücü ilə işləyir!"}
 
 @app.get("/api/accounts/")
